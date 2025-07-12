@@ -1,0 +1,131 @@
+.başlık {
+  background-color: red;
+  font-size: 60px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.text-1 {
+  background-color: aqua;
+  padding: 15px;
+  font-size: 25px;
+  line-height: 40px;
+  font-weight: bold;
+  border-radius: 10px;
+}
+
+.container {
+  background-color: #5eabd6;
+  padding: 20px 30px;
+  border: 3px solid gray;
+  text-align: center;
+  margin: 40px;
+}
+
+#login-form {
+  border: 3px solid gray;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+  border-radius: 10px;
+}
+#login-form .insta-logo {
+  width: 200px;
+  margin-bottom: 40px;
+}
+
+#login-form input {
+  width: 90%;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  padding: 12px 15px;
+}
+#login-form button {
+  width: 200px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #5eabd6;
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: 10px;
+  cursor: pointer;
+}
+#login-form button:hover {
+  background-color: #5eaad698;
+}
+
+#theme-btn {
+  padding: 8px 12px;
+  border: none;
+  background-color: #5eabd6;
+  font-size: 17px;
+  font-weight: 500;
+  border-radius: 5px;
+  position: fixed;
+  top: 10px;
+  right: 15px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s ease;
+}
+#theme-btn:hover {
+  background-color: #5eaad6be;
+}
+
+.dark-theme {
+  background-color: black;
+  color: white;
+}
+
+.theme-example {
+  border: 3px solid gray;
+  padding: 10px;
+  width: 100%;
+  max-width: 600px;
+  margin: 60px auto;
+  border-radius: 5px;
+}
+
+.dark {
+  background-color: black;
+  color: white;
+}
+
+#add-btn {
+  background-color: #63c8ff;
+  border: none;
+  padding: 12px 15px;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 5px;
+  margin: 40px 0;
+  cursor: pointer;
+}
+
+#wrapper-1 {
+  background-color: blanchedalmond;
+  width: 100%;
+  max-width: 700px;
+  margin: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: fit-content;
+}
+
+#wrapper-1 div {
+  background-color: white;
+  padding: 10px;
+  font-size: 40px;
+  text-align: center;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  border-radius: 5px;
+  box-shadow: 0 5px 15px;
+}
