@@ -309,7 +309,3 @@ fetch("https://dummyjson.com/recipes")
   .then((data) => {
     console.log(data);
   });
-
-// todo: Tarif detayını api'dan alınız.
-
-// Arrow functions'da async-await

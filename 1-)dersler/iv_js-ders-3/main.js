@@ -460,5 +460,3 @@ try {
 // try catch finally
 //  +    -      +
 //  -    +      +
-
-// * Javascript Scope Kavramı

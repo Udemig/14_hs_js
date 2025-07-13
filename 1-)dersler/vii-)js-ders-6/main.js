@@ -298,5 +298,3 @@ addBtn.addEventListener("click", () => {
 });
 
 // ! Özetle DOM ile kullanıcı etkileşimli web siteleri oluşturabiliriz.Bunu yaparken hangi metotları kullanıyoruz detaylı şekilde gördük.
-
-// * Javascript Localstorage
