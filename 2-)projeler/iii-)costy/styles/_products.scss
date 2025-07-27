@@ -1,3 +1,4 @@
+@use "./variables";
 .products {
   padding: 10px;
   h1 {
@@ -14,28 +15,28 @@
       img {
         width: 100%;
         height: 450px;
-        object-fit: contain;
+        object-fit: cover;
       }
 
       &-info {
         padding: 10px 15px;
         h2 {
           font-size: 25px;
-          color: $text-color;
+          color: variables.$text-color;
           font-weight: 500;
           margin: 15px 0;
         }
 
         p {
           font-size: 20px;
-          color: $main-color;
+          color: variables.$main-color;
           font-weight: 500;
           margin: 20px 0;
         }
 
         button {
-          background-color: $main-color;
-          color: $bg-color;
+          background-color: variables.$main-color;
+          color: variables.$bg-color;
           padding: 10px;
           width: 100%;
           cursor: pointer;

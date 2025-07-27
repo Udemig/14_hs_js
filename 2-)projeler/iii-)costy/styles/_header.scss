@@ -1,5 +1,6 @@
+@use "./variables";
 header {
-  background-color: $header-color;
+  background-color: variables.$header-color;
   position: sticky;
   height: 80px;
   top: 0;
@@ -14,12 +15,12 @@ header {
     padding: 25px;
 
     a {
-      color: $main-color;
+      color: variables.$main-color;
     }
     // Menu Button
     #menu-btn {
       font-size: 28px;
-      color: $main-color;
+      color: variables.$main-color;
       cursor: pointer;
       display: none;
     }
@@ -54,8 +55,8 @@ header {
       top: 0;
       right: -15px;
       font-size: 13px;
-      background-color: $main-color;
-      color: $bg-color;
+      background-color: variables.$main-color;
+      color: variables.$bg-color;
       width: 20px;
       height: 20px;
       border-radius: 50%;

@@ -1,3 +1,4 @@
+@use "./variables";
 .hero {
   height: calc(100vh - 80px);
   max-height: 880px;
@@ -10,7 +11,7 @@
   h1 {
     font-size: 120px;
     text-transform: uppercase;
-    color: $main-color;
+    color: variables.$main-color;
     position: absolute;
     top: 15px;
     left: 50%;
