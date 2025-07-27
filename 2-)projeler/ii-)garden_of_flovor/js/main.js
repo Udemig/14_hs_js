@@ -8,17 +8,19 @@ import {
 } from "./ui.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
-  // Loader'ı render et
-
-  renderLoader();
-
   // Api isteği at
   const menuData = await getMenu();
 
   // Hangi sayfada olduğumuza karar ver.Eğer ana sayfadaysak buna göre işlemler detay sayfasında ise buna göre işlemler yapacağız
   if (window.location.pathname.includes("/index.html")) {
-    // Menu elemanlarını dinamik şekilde render et
-    renderMenuCard(menuData);
+    // Loader'ı render et
+
+    renderLoader();
+
+    setTimeout(() => {
+      // Menu elemanlarını dinamik şekilde render et
+      renderMenuCard(menuData);
+    }, 2000);
 
     // uiElements.categoryButtons bir nodeList olduğundan buna addEventListener ekleyemeyiz.Bunun için nodeList içerisindeki her bir elemana teker teker erişip addEventListener ekleyeceğiz.
     uiElements.categoryButtons.forEach((button) => {
