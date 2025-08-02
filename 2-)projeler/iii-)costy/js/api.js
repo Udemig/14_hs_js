@@ -11,7 +11,7 @@ const fetchProducts = async () => {
     return data.products;
   } catch (error) {
     // Kullanıcıya hata durumunda bildirim gönder
-    alert("Ürünlerin api'dan alınması sırasında bir hata oluştu !!");
+    alert("An error occurred while retrieving products from the API!!");
 
     // Hata durumunda boş bir dizi return et
     return [];

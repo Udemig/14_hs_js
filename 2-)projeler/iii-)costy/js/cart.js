@@ -1,4 +1,10 @@
 import { getFromLocale, saveToLocale } from "./helpers.js";
+import {
+  renderCartItems,
+  renderCartQuantity,
+  renderCartTotal,
+  renderNotFound,
+} from "./ui.js";
 
 // LocaleStorage'dan sepete eklenen ürünleri al
 let cart = getFromLocale("cart");
@@ -45,6 +51,74 @@ const addToCart = (e, products) => {
   setTimeout(() => {
     e.target.textContent = "Add to cart";
   }, 2000);
+
+  //  Header içerisindeki sepet ikonunun yanındaki miktar değerini güncelle
+  renderCartQuantity(cart);
 };
 
-export { addToCart };
+// Sepetten eleman kaldıracak fonksiyon
+const removeFromCart = (e) => {
+  // Kullanıcıdan silme işlemi için onay al
+  const response = confirm("Do you confirm to delete this product?");
+
+  // Eğer kullanıcı silme işlemini onayladıysa
+  if (response) {
+    // Tıklanılan elemanın id'sine eriş ve id'yi number tipine çevir
+    const productId = Number(e.target.dataset.id);
+
+    // Id'si bilinen ürünü sepetten kaldır
+    cart = cart.filter((item) => item.id !== productId);
+
+    // Güncel sepete göre localeStorage'ı güncelle
+    saveToLocale("cart", cart);
+    // Sepetteki ürünlerin toplam fiyatını renderla
+    renderCartTotal(cart);
+
+    // Güncellenen sepet'e göre arayüzü renderla.Eğer sepette eleman varsa sepetteki elemanları renderla ama sepette eleman yoksa not found içeriğini renderla
+    if (cart.length > 0) {
+      renderCartItems(cart);
+    } else {
+      renderNotFound();
+    }
+  }
+
+  //  Header içerisindeki sepet ikonunun yanındaki miktar değerini güncelle
+  renderCartQuantity(cart);
+};
+
+// Sepetteki ürünün miktarını güncelleyen fonksiyon
+const onQuantityChange = (e) => {
+  // * Bu fonksiyondan beklentimiz miktarı değişen ürünü bulması ve değişen miktarı ilgili ürünün yeni miktarı olarak belirlemesidir.
+
+  // Güncellenecek elemanın id'sine eriş
+  const productId = parseInt(e.target.dataset.id);
+
+  // Güncellenecek elemanın güncel değerine eriş
+  const newQuantity = parseInt(e.target.value);
+
+  // Yeni miktar 0'dan büyük mü
+  if (newQuantity > 0) {
+    // Güncellenecek elemanı dizi içerisinde bul
+    const updateItem = cart.find((item) => item.id === productId);
+
+    // Bulunan ürünün değerini güncelle
+    updateItem.quantity = newQuantity;
+
+    // Güncel sepet dizisini localStorage'a aktar
+    saveToLocale("cart", cart);
+
+    // Sepetteki ürünlerin toplam fiyatını renderla
+    renderCartTotal(cart);
+
+    //  Header içerisindeki sepet ikonunun yanındaki miktar değerini güncelle
+    renderCartQuantity(cart);
+  } else {
+    // Eğer yeni miktar 0'dan büyük değilse kullanıcıya bir uyarıda bulun
+    alert("Plase enter a value grater than 0");
+
+    // Fonksiyonu durdur
+    return;
+  }
+};
+
+export { addToCart, removeFromCart, onQuantityChange };
