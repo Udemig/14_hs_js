@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 // ! Form gönderildiğinde
-ui.form.addEventListener("submit", (e) => {
+ui.form.addEventListener("submit", async (e) => {
   // Sayfa yenilemeyi engellee
   e.preventDefault();
 
@@ -36,6 +36,29 @@ ui.form.addEventListener("submit", (e) => {
     return;
   }
 
-  // Formun gönderilmesi sonucunda elde edilen query değeri ile api'a istek at
-  api.getSearchMusic(query);
+  // ekrana loader bas
+  ui.renderLoader();
+
+  // sayfa başlığını güncelle
+  ui.musicTitle.textContent = `${query} için sonuçlar`;
+
+  // formun gönderilmesi sonucunda elde edilen query değeri ile api'a istek at
+  const songs = await api.getSearchMusic(query);
+
+  // api'dan gelen verileri ekrana bas
+  ui.renderCard(songs);
+});
+
+// ! Oynat butonuna tıklandığında
+ui.musicList.addEventListener("click", (e) => {
+  if (e.target.className === "play") {
+    // oynatılan şarkının id'sine eriş
+    const id = e.target.dataset.id;
+
+    // oynatılacak şarkının bütün verilerine eriş
+    const music = api.musics.find((music) => music.key == id);
+
+    // player arayüznü güncelle
+    ui.renderPlayer(music);
+  }
 });

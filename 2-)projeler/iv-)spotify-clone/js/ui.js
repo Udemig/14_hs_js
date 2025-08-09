@@ -5,6 +5,8 @@ class UI {
     // Html'den Js'e elemanları çekme
     this.musicList = document.querySelector(".music-list");
     this.form = document.querySelector("form");
+    this.musicTitle = document.querySelector("#music-title");
+    this.player = document.querySelector(".player");
   }
 
   // Şarkı kartlarını renderlayacak fonksiyon
@@ -31,7 +33,7 @@ class UI {
                   alt="music-image"
                 />
 
-                <div class="play">
+                <div class="play" data-id="${song.key}">
                   <i class="bi bi-play-fill"></i>
                 </div>
               </figure>
@@ -76,6 +78,65 @@ class UI {
 </div>
 
 `;
+  }
+
+  // player alanını dinamik olarak ekrana basıcak fonksiyon
+  renderPlayer(music) {
+    // player arayüzünü ekrana bas
+    this.player.innerHTML = `
+      <div class="info">
+        <img
+          id="music-image"
+          src="${music.images.coverart}"
+          alt="music-image"
+        />
+
+        <div>
+          <h5 title="${music.title}">${music.title}</h5>
+          <p>${music.subtitle}</p>
+        </div>
+      </div>
+
+      <div class="audio-wrapper">
+      <audio
+       volume
+        src="${music.hub.actions[1].uri}"
+        controls
+      ></audio>
+      </div>
+
+      <div class="icons">
+        <i class="bi bi-apple-music"></i>
+        <i class="bi bi-music-note-list"></i>
+        <i class="bi bi-pc-display"></i>
+      </div>
+    `;
+
+    // audio elementine eriş
+    const audioElement = document.querySelector("audio");
+
+    // ses seviyesini düşür
+    audioElement.volume = 0.05;
+    // otomatik oynatmayı aç
+    audioElement.autoplay = true;
+
+    // müzik oynatıldığına animasyonu çalıştır
+    audioElement.addEventListener("play", () => {
+      // playerdaki resme eriş
+      const image = document.querySelector("#music-image");
+
+      // resme animasyonu başlatan class'ı ekle
+      image.classList.add("animate");
+    });
+
+    // müzik durdurulduğunda animasyonu durdur
+    audioElement.addEventListener("pause", () => {
+      // playerdaki resme eriş
+      const image = document.querySelector("#music-image");
+
+      // resimden animayonu başlatan class'ı kaldır
+      image.classList.remove("animate");
+    });
   }
 }
 

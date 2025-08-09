@@ -126,6 +126,10 @@ main {
             cursor: pointer;
             transition: all 0.3s ease;
 
+            i {
+              pointer-events: none;
+            }
+
             &:hover {
               scale: 1.1;
               transform: rotate(360deg);
