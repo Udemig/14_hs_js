@@ -3,12 +3,15 @@ import { cities } from "./constants.js";
 // arayüz elementleri
 const uiElement = {
   themeBtn: document.querySelector(".theme-btn"),
+  locateBtn: document.querySelector("#locate-btn"),
   dataList: document.querySelector("#city-list"),
   searchForm: document.querySelector("#search-form"),
   searchInput: document.querySelector("#city-input"),
   errorContainer: document.querySelector("#error-message"),
   loader: document.querySelector("#loader"),
   weatherContainer: document.querySelector(".weather-container"),
+  recentChips: document.querySelector("#recent-chips"),
+  unitToggle: document.querySelector(".unit-toggle"),
 };
 
 // tema ikonunu güncelleycek bir fonksiyon
@@ -43,6 +46,18 @@ const setLoader = (visible) => {
   uiElement.loader.classList.toggle("show", visible);
 };
 
+// unix zaman formatında gelen veriyi formatlayan fonksiyon
+const formatTime = (unixTime, units) => {
+  // unix zaman formatını milisaniye formatına çevirip date içinde kullandık
+  const d = new Date(unixTime * 1000);
+
+  // zamanın içerisinde saat ve dakikayı al
+  return d.toLocaleTimeString(units === "imperial" ? "en" : "tr", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
 // ekrana havadurumu verilerini bas
 const renderWeatherData = (data, flagUrl, units = "metric") => {
   // hata varsa temizle
@@ -50,9 +65,10 @@ const renderWeatherData = (data, flagUrl, units = "metric") => {
 
   // unit parametresine göre ekrana basıalcak değeri belire
   const tempUnit = units === "imperial" ? "°F" : "°C";
+  // unit paarametresine göre hız birimini belirle
+  const speedUnit = units === "imperial" ? "mph" : "m/s";
 
   // içeriği ekrana bas
-  // todo içeriği dinamik hale getir
   uiElement.weatherContainer.innerHTML = `
       <article class="weather-card">
             <!-- header -->
@@ -76,8 +92,8 @@ const renderWeatherData = (data, flagUrl, units = "metric") => {
               </div>
 
               <div class="weather-icon">
-                <img src="https://openweathermap.org/img/wn/01n@2x.png" />
-                <p>açık</p>
+                <img src="https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png" />
+                <p>${data.weather[0].description}</p>
               </div>
             </div>
 
@@ -88,7 +104,7 @@ const renderWeatherData = (data, flagUrl, units = "metric") => {
                 <i class="bi bi-arrow-down"></i>
                 <div>
                   <p>Min</p>
-                  <b>27 °C</b>
+                  <b>${data.main.temp_min} ${tempUnit}</b>
                 </div>
               </div>
               <!-- detay -->
@@ -96,7 +112,7 @@ const renderWeatherData = (data, flagUrl, units = "metric") => {
                 <i class="bi bi-arrow-up"></i>
                 <div>
                   <p>Max</p>
-                  <b>30 °C</b>
+                  <b>${data.main.temp_max} ${tempUnit}</b>
                 </div>
               </div>
               <!-- detay -->
@@ -104,7 +120,7 @@ const renderWeatherData = (data, flagUrl, units = "metric") => {
                 <i class="bi bi-wind"></i>
                 <div>
                   <p>Rüzgar Hızı</p>
-                  <b>17 km/h</b>
+                  <b>${data.wind.speed} ${speedUnit}</b>
                 </div>
               </div>
               <!-- detay -->
@@ -112,7 +128,7 @@ const renderWeatherData = (data, flagUrl, units = "metric") => {
                 <i class="bi bi-wind"></i>
                 <div>
                   <p>Rüzgar Derecesi</p>
-                  <b>200 deg</b>
+                  <b>${data.wind.deg}°</b>
                 </div>
               </div>
               <!-- detay -->
@@ -120,7 +136,7 @@ const renderWeatherData = (data, flagUrl, units = "metric") => {
                 <i class="bi bi-droplet"></i>
                 <div>
                   <p>Nem</p>
-                  <b>7 %</b>
+                  <b>${data.main.humidity} %</b>
                 </div>
               </div>
               <!-- detay -->
@@ -128,7 +144,7 @@ const renderWeatherData = (data, flagUrl, units = "metric") => {
                 <i class="bi bi-speedometer2"></i>
                 <div>
                   <p>Basınç</p>
-                  <b>100 hPa</b>
+                  <b>${data.main.pressure} hPa</b>
                 </div>
               </div>
               <!-- detay -->
@@ -136,7 +152,7 @@ const renderWeatherData = (data, flagUrl, units = "metric") => {
                 <i class="bi bi-eye"></i>
                 <div>
                   <p>Görüş</p>
-                  <b>20 km</b>
+                  <b>${data.visibility / 1000} ${speedUnit}</b>
                 </div>
               </div>
               <!-- detay -->
@@ -144,7 +160,7 @@ const renderWeatherData = (data, flagUrl, units = "metric") => {
                 <i class="bi bi-cloud"></i>
                 <div>
                   <p>Bulut</p>
-                  <b>40 %</b>
+                  <b>${data.clouds.all} %</b>
                 </div>
               </div>
               <!-- detay -->
@@ -152,7 +168,7 @@ const renderWeatherData = (data, flagUrl, units = "metric") => {
                 <i class="bi bi-sun"></i>
                 <div>
                   <p>Gün Doğumu</p>
-                  <b>06:00</b>
+                  <b>${formatTime(data.sys.sunrise, units)}</b>
                 </div>
               </div>
               <!-- detay -->
@@ -160,7 +176,7 @@ const renderWeatherData = (data, flagUrl, units = "metric") => {
                 <i class="bi bi-moon"></i>
                 <div>
                   <p>Gün Batımı</p>
-                  <b>21:00</b>
+                  <b>${formatTime(data.sys.sunset, units)}</b>
                 </div>
               </div>
             </div>
@@ -168,5 +184,38 @@ const renderWeatherData = (data, flagUrl, units = "metric") => {
   `;
 };
 
+// son aratılanları ekrana bas
+const renderRecentChips = (recentCities, onSelect) => {
+  uiElement.recentChips.innerHTML = "";
+
+  recentCities.forEach((city) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "chip";
+    btn.textContent = city;
+    btn.addEventListener("click", () => onSelect(city));
+    uiElement.recentChips.appendChild(btn);
+  });
+};
+
+// seçili birimi güncelle
+const updateUnitToggle = (units) => {
+  uiElement.unitToggle.querySelectorAll("button").forEach((btn) => {
+    // butonun değeri seçilen birim değerine eşit mi
+    const isActive = btn.value === units;
+    btn.classList.toggle("active", isActive);
+  });
+};
+
 // değişken/fonksiyonları diğer dosyalarda kullanmak için export ediyoruz
-export { uiElement, updateThemeIcon, renderCityList, renderError, clearError, setLoader, renderWeatherData };
+export {
+  uiElement,
+  updateThemeIcon,
+  renderCityList,
+  renderError,
+  clearError,
+  setLoader,
+  renderWeatherData,
+  renderRecentChips,
+  updateUnitToggle,
+};

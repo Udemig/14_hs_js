@@ -68,7 +68,7 @@ header {
         display: flex;
         border: 1px solid var(--outline);
         border-radius: 10px;
-        background: var(--surface);
+        background: var(--surface) / 30;
         overflow: hidden;
 
         button {
@@ -201,7 +201,7 @@ header {
   border: 1px solid var(--outline);
   border-radius: 16px;
   padding: 22px;
-  max-width: 720px;
+  max-width: 850px;
   margin: 26px auto 0;
   box-shadow: variables.$shadow-strong;
   backdrop-filter: blur(8px);
