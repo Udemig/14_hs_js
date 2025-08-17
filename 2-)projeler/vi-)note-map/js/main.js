@@ -1,0 +1,134 @@
+import { ui, personIcon } from "./ui.js";
+import { getNoteIcon } from "./helpers.js";
+
+//* Global Değişkenler
+const STATE = {
+  map: null,
+  layer: null,
+  clickedCoords: null,
+  notes: JSON.parse(localStorage.getItem("notes") || "[]"),
+};
+
+//* Kullanıcının konumuna göre haritayı yükle
+window.navigator.geolocation.getCurrentPosition(
+  // kullanıcı izin verirse onun olduğu konumda yükle
+  (e) => loadMap([e.coords.latitude, e.coords.longitude]),
+  // izin vermezse varsayılan olarak istanbul odaklı yükle
+  () => loadMap([41.104187, 29.051014])
+);
+
+//* Leaflet haritasının kulumunu yapar
+function loadMap(position) {
+  // haritanın kurulumu
+  STATE.map = L.map("map", { zoomControl: false }).setView(position, 11);
+
+  // haritaya arayüz ekle
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+  }).addTo(STATE.map);
+
+  // kontrolcüyü sağ alta taşı
+  L.control.zoom({ position: "bottomright" }).addTo(STATE.map);
+
+  // harita üzerinde bir layer oluştur
+  STATE.layer = L.layerGroup().addTo(STATE.map);
+
+  // ekrana marker bas
+  const marker = L.marker(position, { icon: personIcon }).addTo(STATE.map);
+
+  // marker'a popup ekle
+  marker.bindPopup("<b>Buradasın</b>");
+
+  // haritaya tıklama olayı için izlyici ekle
+  STATE.map.on("click", onMapClick);
+
+  // notları ekrana bas
+  renderNoteCards(STATE.notes);
+  renderMarker(STATE.notes);
+}
+
+//* Haritaya tıklanınca çalışır
+function onMapClick(e) {
+  // son tıklanılan konumu kaydet
+  STATE.clickedCoords = [e.latlng.lat, e.latlng.lng];
+
+  // aside alanındaki formu aktif hale getir
+  ui.aside.classList.add("add");
+
+  // aside alanındaki başlığı güncelle
+  ui.asideTitle.textContent = "Yeni Not";
+}
+
+//* İptal butonuna tıklanınca
+ui.cancelButton.addEventListener("click", () => {
+  // aside alanını ekleme modundan çıkar
+  ui.aside.classList.remove("add");
+
+  // title'ı eski haline getir
+  ui.asideTitle.textContent = "Notlar";
+});
+
+//* Ok'a tıklanınca aside alanını aç/kapa
+ui.arrow.addEventListener("click", () => {
+  ui.aside.classList.toggle("hide");
+});
+
+//* Form gönderilince
+ui.form.addEventListener("submit", (e) => {
+  // sayfa yenilemeyi engelle
+  e.preventDefault();
+
+  // formdaki verilere eriş
+  const title = e.target[0].value;
+  const date = e.target[1].value;
+  const status = e.target[2].value;
+
+  // eğer form doldurulmadıysa kullanıcıya uyarı ver
+  if (!title || !date || !status) {
+    return alert("Lütfen formu doldurunuz!");
+  }
+
+  // kaydedilecek nesneyi oluştur
+  const newNote = {
+    id: new Date().getTime(),
+    title,
+    date,
+    status,
+    coords: STATE.clickedCoords,
+  };
+
+  // notes dizisine yeni notu ekl
+  STATE.notes.push(newNote);
+
+  // localStorage'ı güncelle
+  localStorage.setItem("notes", JSON.stringify(STATE.notes));
+
+  // ekleme modunu kapat
+  ui.aside.classList.remove("add");
+  ui.asideTitle.textContent = "Notlar";
+
+  // notları ekrana bas
+  renderNoteCards(STATE.notes);
+  renderMarker(STATE.notes);
+});
+
+//* note marker'larını ekrana bas
+function renderMarker(notes) {
+  // haritadaki katmana daha önceden eklenmiş marker'ları temizle
+  STATE.layer.clearLayers();
+
+  // notes dizisindeki her bir not için ekrana bir marker bas
+  notes.forEach((note) => {
+    // note'un icon'ını belirle
+    const icon = getNoteIcon(note.status);
+
+    // marker oluştur
+    const marker = L.marker(note.coords, { icon }).addTo(STATE.layer);
+
+    // note'ların başlığını popup olarak marker'a ekle
+    marker.bindPopup(`<p class="popup">${note.title}<p>`);
+  });
+}
+
+//* note card'larını ekrana bas
+function renderNoteCards(notes) {}
