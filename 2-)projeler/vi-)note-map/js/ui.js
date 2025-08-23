@@ -4,6 +4,7 @@ export const ui = {
   form: document.querySelector("aside form"),
   arrow: document.querySelector("#arrow"),
   cancelButton: document.querySelector("#cancel-btn"),
+  noteList: document.querySelector("#note-list"),
 };
 
 export const personIcon = L.icon({

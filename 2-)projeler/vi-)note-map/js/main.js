@@ -1,5 +1,5 @@
 import { ui, personIcon } from "./ui.js";
-import { getNoteIcon } from "./helpers.js";
+import { getNoteIcon, formatDate, getStatus, statusObj } from "./helpers.js";
 
 //* Global Değişkenler
 const STATE = {
@@ -131,4 +131,68 @@ function renderMarker(notes) {
 }
 
 //* note card'larını ekrana bas
-function renderNoteCards(notes) {}
+function renderNoteCards(notes) {
+  // notes dizisindeki her nesneyi dönerek bir li elemanı oluştur
+  const notesHtml = notes
+    .map(
+      (note) => `
+        <li>
+          <div>
+            <h3>${note.title}</h3>
+            <p>${formatDate(note.date)}</p>
+            <p class="status">${getStatus(note.status)}</p>
+          </div>
+          <div class="icons">
+            <i data-id="${note.id}" id="fly-btn" class="bi bi-airplane-fill"></i>
+            <i data-id="${note.id}" id="trash-btn" class="bi bi-trash"></i>
+          </div>
+        </li> `
+    )
+    .join(" ");
+
+  // oluşturulan note elemanlarını ekrana bas
+  ui.noteList.innerHTML = notesHtml;
+
+  // delete btn'lara eriş
+  document.querySelectorAll("#trash-btn").forEach((btn) => {
+    // butonun bağlı olduğu note'un id'sine eriş
+    const id = +btn.dataset.id;
+
+    // butona tıklanma olayını izle
+    btn.addEventListener("click", () => deleteNote(id));
+  });
+
+  // fly btn'lara eriş
+  document.querySelectorAll("#fly-btn").forEach((btn) => {
+    // butonun bağlı olduğu note'un id'sine eriş
+    const id = +btn.dataset.id;
+
+    // butona tıklanma olayını izle
+    btn.addEventListener("click", () => flyToNote(id));
+  });
+}
+
+// notu silen fonksiyon
+const deleteNote = (id) => {
+  // kullanıcadan onay vermzse dur
+  if (!confirm("Notu silmek istediğinizden emin misiniz?")) return;
+
+  // id'si bilinen note'u diziden kaldır
+  STATE.notes = STATE.notes.filter((note) => note.id !== id);
+
+  // localstrage'ı güncelle
+  localStorage.setItem("notes", JSON.stringify(STATE.notes));
+
+  // arayüzü güncelle
+  renderMarker(STATE.notes);
+  renderNoteCards(STATE.notes);
+};
+
+// note'u haritada gösteren fonksiyon
+const flyToNote = (id) => {
+  // tıklanılan note'un verilerine eriş
+  const note = STATE.notes.find((note) => note.id === id);
+
+  // haritada göster
+  STATE.map.flyTo(note.coords, 15);
+};
